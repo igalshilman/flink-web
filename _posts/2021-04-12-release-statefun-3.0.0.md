@@ -7,6 +7,9 @@ authors:
 - igalshilman:
   name: "Igal Shilman"
   twitter: "IgalShilman"
+- Gordon
+  name: "Gordon"
+  twitter: "TODO"
 ---
 
 The Apache Flink community is happy to announce the release of Stateful Functions (StateFun) 3.0.0!  This release focuses on bringing remote function to the front and center of StateFun. It is now easier, more efficient, and more ergonomic to write applications that live in a separate process to the StateFun/Flink cluster.
@@ -114,8 +117,9 @@ For a detailed SDK tutorial, we would like to encourage you to visit:
 ## Dynamic Registration of State and Functions
 
 Starting with this release, it is now possible to dynamically register new functions, without going trough a stateful upgrade cycle in Apache Flink.
-Starting with the StateFun 3.0, it is possible to specify template 
+This is achieved with a new `endpoint` definition that supports target URL templating.
 
+Consider the following definition:
 
 ```yaml
    endpoints:
@@ -129,27 +133,17 @@ Starting with the StateFun 3.0, it is possible to specify template
 ```
 
 
+A message being addressed to a function of type `example/greeter` would be forwarded to `https://loadbalancer.svc.cluster.local/greeter`.
+
+This unlocks the possibility to dynamically introduce new functions into the topology without ever restarting the Stateful Functions application.
+
+
 ## Summary
-
-This release
-
 
 1. ✅ Functions can be written in any language 
 2. ✅ Blocking calls/ CPU heavy computations happens in a separate process(es) 
 3. ✅ Registering a new function, or changing the state definitions of an existing function happens dynamically.
 4. ✅ There is a unified, cross language type system, along with few builtin primitive types, that can be used for messaging and state.
-
-
-## Important Patch Notes
-
-Below is a list of user-facing interface and configuration changes, dependency version upgrades, or removal of supported versions that would be
-important to be aware of when upgrading your StateFun applications to this version:
-
-* [[FLINK-18812](https://issues.apache.org/jira/browse/FLINK-18812)] The Flink version in StateFun 2.2 has been upgraded to 1.11.1.
-* [[FLINK-19203](https://issues.apache.org/jira/browse/FLINK-19203)] Upgraded Scala version to 2.12, and dropped support for 2.11.
-* [[FLINK-19190](https://issues.apache.org/jira/browse/FLINK-19190)] All existing metric names have been renamed to be camel-cased instead of snake-cased, to conform with the Flink metric naming conventions. **This breaks existing deployments if you depended on previous metrics**.
-* [[FLINK-19192](https://issues.apache.org/jira/browse/FLINK-19192)] The connection pool size for remote function HTTP requests have been increased to 1024, with a stale TTL of 1 minute.
-* [[FLINK-19191](https://issues.apache.org/jira/browse/FLINK-19191)] The default max number of asynchronous operations per JVM (StateFun worker) has been decreased to 1024.
 
 ## Release Notes
 
